@@ -7,5 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Roberto Vazquez @robertCoder (roberto.smusic.1@gmail.com)",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "johnny-five": "^2.1.0",
+    "socket.io": "^4.7.5"
+  }
 }
