@@ -1,0 +1,11 @@
+{
+  "name": "usbswitch",
+  "version": "0.1.0",
+  "description": "proyecto para el control de encendido de perifericos por medio de software",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Roberto Vazquez @robertCoder (roberto.smusic.1@gmail.com)",
+  "license": "ISC"
+}
