@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container theme-showcase" role="main">
+        <div class="jumbotron">
+            <h2>Firmata y Arduino</h1>
+                <p>Con este ejemplo vamos a controlar un LED a través de una web. Podemos controlar encender o apagar el
+                    LED</p>
+        </div>
+        <div>
+            <div>
+                <button id="t_on" type="button">Teclado On</button>
+                <button id="t_off" type="button">Teclado Off</button>
+            </div>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
+        <script>
+            var socket = io();
+
+            function onTeclado() {
+                socket.emit('onKey');
+            }
+
+            function offTeclado() {
+                socket.emit('offKey');
+            }
+
+            document.getElementById('t_on').onclick = onTeclado;
+            document.getElementById('t_off').onclick = offTeclado;
+        </script>
+</body>
+</html>
