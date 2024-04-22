@@ -13,15 +13,24 @@
                     LED</p>
         </div>
         <div>
-            <div>
+            <div class="teclado">
                 <button id="t_on" type="button">Teclado On</button>
                 <button id="t_off" type="button">Teclado Off</button>
+            </div>
+            <div class="mic">
+                <button id="m_on" type="button">Mic On</button>
+                <button id="m_off" type="button">Mic Off</button>
+            </div>
+            <div class="cam">
+                <button id="c_on" type="button">Cam On</button>
+                <button id="c_off" type="button">Cam Off</button>
             </div>
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
         <script>
             var socket = io();
 
+            // control de teclado 
             function onTeclado() {
                 socket.emit('onKey');
             }
@@ -30,8 +39,30 @@
                 socket.emit('offKey');
             }
 
+            // control de mic
+            function onMic() {
+                socket.emit('onMic');
+            }
+
+            function offMic() {
+                socket.emit('offMic');
+            }
+
+            // control de cam
+            function onCam() {
+                socket.emit('onCam');
+            }
+
+            function offCam() {
+                socket.emit('offCam');
+            }
+
             document.getElementById('t_on').onclick = onTeclado;
             document.getElementById('t_off').onclick = offTeclado;
+            document.getElementById('m_on').onclick = onMic;
+            document.getElementById('m_off').onclick = offMic;
+            document.getElementById('c_on').onclick = onCam;
+            document.getElementById('c_off').onclick = offCam;
         </script>
 </body>
 </html>

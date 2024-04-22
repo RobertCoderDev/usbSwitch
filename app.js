@@ -10,7 +10,7 @@ app.get("/", function (req, res) {
 });
 
 var board = new five.Board({
-    port: "COM5"
+    port: "COM8"
 });
 
 board.on("ready", function () {
@@ -22,6 +22,8 @@ board.on("ready", function () {
     var cam = new five.Relay(4)
 
     var buttonKey = new five.Button(8)
+    var buttonMic = new five.Button(9)
+    var buttonCam = new five.Button(10)
 
     led.off();
 
@@ -33,6 +35,7 @@ board.on("ready", function () {
             
         led.off();
 
+        // control por interface
         socket.on("offKey", function () {
             key.close();
             console.log("apagando teclado ...");
@@ -63,11 +66,23 @@ board.on("ready", function () {
             console.log("encendiendo cámara ...");
         });
 
+        // control por push bottom 
         buttonKey.on("down", function (){
             key.toggle();
             console.log("cambio manual del estado de alimentación del teclado ...");
         })
 
+        buttonMic.on("down", function (){
+            mic.toggle();
+            console.log("cambio manual del estado de alimentación del micrófono ...");
+        })
+
+        buttonCam.on("down", function (){
+            cam.toggle();
+            console.log("cambio manual del estado de alimentación de la cámara ...");
+        })
+
+        // loop para encender led de estado 
         var loop = setInterval(() => {
             if (loopVar === 5) {
                 clearInterval(loop);
