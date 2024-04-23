@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>USB SWITCH</title>
+        <link rel="stylesheet" href="/styles.css">
+    </head>
+    <body>
+        <section class="container">
+            <div class="title">
+                <h1>Control de periféricos</h1>
+                <p>presione el botón de acción para cada periférico</p>
+            </div>
+            <div class="containerButtons">
+                <div class="teclado">
+                    <img src="/img/teclado.png" alt="teclado">
+                    <div class="buttons">
+                        <button id="t_on" type="button">ON</button>
+                        <button id="t_off" type="button">OFF</button>
+                    </div>
+                </div>
+                <div class="mic">
+                    <img src="/img/mic.png" alt="mic">
+                    <div class="buttons">
+                        <button id="m_on" type="button">ON</button>
+                        <button id="m_off" type="button">OFF</button>
+                    </div>
+                </div>
+                <div class="cam">
+                    <img src="/img/cam.png" alt="cam">
+                    <div class="buttons">
+                        <button id="c_on" type="button">ON</button>
+                        <button id="c_off" type="button">OFF</button>
+                    </div>
+                </div>
+            </div>
+            <div id="mensaje">prueba consola</div>
+        </section>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
+        <script>
+            var socket = io();
+
+            // control de teclado
+            function onTeclado() {
+                socket.emit("onKey", (response) => {
+                    console.log(response);
+                });
+            }
+
+            function offTeclado() {
+                socket.emit("offKey");
+            }
+
+            // control de mic
+            function onMic() {
+                socket.emit("onMic");
+            }
+
+            function offMic() {
+                socket.emit("offMic");
+            }
+
+            // control de cam
+            function onCam() {
+                socket.emit("onCam");
+            }
+
+            function offCam() {
+                socket.emit("offCam");
+            }
+
+            document.getElementById("t_on").onclick = onTeclado;
+            document.getElementById("t_off").onclick = offTeclado;
+            document.getElementById("m_on").onclick = onMic;
+            document.getElementById("m_off").onclick = offMic;
+            document.getElementById("c_on").onclick = onCam;
+            document.getElementById("c_off").onclick = offCam;
+        </script>
+    </body>
+</html>

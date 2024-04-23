@@ -3,10 +3,10 @@ var app = express();
 var io = require("socket.io")(app.listen(8081));
 var five = require("johnny-five");
 
-app.use(express.static(__dirname + "/app.js"));
+app.use(express.static(__dirname + "/src"));
 
 app.get("/", function (req, res) {
-    res.sendFile(__dirname + "/index.html");
+    res.sendFile(__dirname + "/src/index.html");
 });
 
 var board = new five.Board({
@@ -41,9 +41,10 @@ board.on("ready", function () {
             console.log("apagando teclado ...");
         });
 
-        socket.on("onKey", function () {
+        socket.on("onKey", function (callback) {
             key.open();
             console.log("encendiendo teclado ...");
+            callback("hola desde el servidor")
         });
 
         socket.on("offMic", function () {
