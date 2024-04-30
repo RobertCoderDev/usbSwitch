@@ -13,27 +13,91 @@ var board = new five.Board({
     port: "COM8"
 });
 
-board.on("ready", function () {
 
+// conexión a la placa Arduino
+board.on("ready", function () {
     var led = new five.Led(13);
 
-    var key = new five.Relay(2)
-    var mic = new five.Relay(3)
-    var cam = new five.Relay(4)
+    var key = new five.Relay(2);
+    var mic = new five.Relay(3);
+    var cam = new five.Relay(4);
 
-    var buttonKey = new five.Button(8)
-    var buttonMic = new five.Button(9)
-    var buttonCam = new five.Button(10)
+    var buttonKey = new five.Button(5);
+    var buttonMic = new five.Button(6);
+    var buttonCam = new five.Button(7);
+
+    var keyState = new five.Switch(8);
+    var micState = new five.Switch(9);
+    var camState = new five.Switch(10);
 
     led.off();
 
+    key.open();
+    mic.open();
+    cam.open();
+
     console.log("conectado a la placa Arduino ...");
 
-    io.on("connection", function (socket) {
 
+    // control por push bottom
+    buttonKey.on("down", function () {
+        key.toggle();
+        console.log("cambio manual del estado de alimentación del teclado ...");
+    });
+
+    buttonMic.on("down", function () {
+        mic.toggle();
+        console.log("cambio manual del estado de alimentación del micrófono ...");
+    });
+
+    buttonCam.on("down", function () {
+        cam.toggle();
+        console.log("cambio manual del estado de alimentación de la cámara ...");
+    });
+
+
+    // conexión a un cliente front end
+    io.on("connection", function (socket) {
         var loopVar = 0;
-            
-        led.off();
+
+
+        // enviar primer estado de los periféricos al front end
+        if (keyState.isClosed) {
+            io.emit("response", {
+                device: "teclado",
+                state: "on",
+            });
+        }else {
+            io.emit("response", {
+                device: "teclado",
+                state: "off",
+            });
+        }
+
+        if (micState.isClosed) {
+            io.emit("response", {
+                device: "mic",
+                state: "on",
+            });
+        }else {
+            io.emit("response", {
+                device: "mic",
+                state: "off",
+            });
+        }
+
+        if (camState.isClosed) {
+            io.emit("response", {
+                device: "cam",
+                state: "on",
+            });
+        }else {
+            io.emit("response", {
+                device: "cam",
+                state: "off",
+            });
+        }
+
 
         // control por interface
         socket.on("offKey", function () {
@@ -41,10 +105,9 @@ board.on("ready", function () {
             console.log("apagando teclado ...");
         });
 
-        socket.on("onKey", function (callback) {
+        socket.on("onKey", function () {
             key.open();
             console.log("encendiendo teclado ...");
-            callback("hola desde el servidor")
         });
 
         socket.on("offMic", function () {
@@ -67,23 +130,45 @@ board.on("ready", function () {
             console.log("encendiendo cámara ...");
         });
 
-        // control por push bottom 
-        buttonKey.on("down", function (){
-            key.toggle();
-            console.log("cambio manual del estado de alimentación del teclado ...");
-        })
+        // revision estado de los relay y envió a la interface web
+        keyState.on("close", function () {
+            io.emit("response", {
+                device: "teclado",
+                state: "on",
+            });
+        });
+        keyState.on("open", function () {
+            io.emit("response", {
+                device: "teclado",
+                state: "off",
+            });
+        });
+        micState.on("close", function () {
+            io.emit("response", {
+                device: "mic",
+                state: "on",
+            });
+        });
+        micState.on("open", function () {
+            io.emit("response", {
+                device: "mic",
+                state: "off",
+            });
+        });
+        camState.on("close", function () {
+            io.emit("response", {
+                device: "cam",
+                state: "on",
+            });
+        });
+        camState.on("open", function () {
+            io.emit("response", {
+                device: "cam",
+                state: "off",
+            });
+        });
 
-        buttonMic.on("down", function (){
-            mic.toggle();
-            console.log("cambio manual del estado de alimentación del micrófono ...");
-        })
-
-        buttonCam.on("down", function (){
-            cam.toggle();
-            console.log("cambio manual del estado de alimentación de la cámara ...");
-        })
-
-        // loop para encender led de estado 
+        // loop para encender led de estado
         var loop = setInterval(() => {
             if (loopVar === 5) {
                 clearInterval(loop);
@@ -92,9 +177,14 @@ board.on("ready", function () {
                 loopVar++;
             }
         }, 500);
-        
-        console.log("conexión establecida con el frontend ...");
-        
-    });
 
+        // mensa de conexión exitosa al front end
+        console.log("conexión establecida con el frontend ...");
+
+        // led de desconexión  del front end
+        socket.on("disconnect", () => {
+            led.off();
+            console.log("frontend desconectado ...");
+        });
+    });
 });

@@ -13,39 +13,39 @@
                 <p>presione el botón de acción para cada periférico</p>
             </div>
             <div class="containerButtons">
-                <div class="teclado">
-                    <img src="/img/teclado.png" alt="teclado">
+                <div>
+                    <img id="teclado" src="/img/teclado.png" alt="teclado">
                     <div class="buttons">
                         <button id="t_on" type="button">ON</button>
                         <button id="t_off" type="button">OFF</button>
                     </div>
                 </div>
-                <div class="mic">
-                    <img src="/img/mic.png" alt="mic">
+                <div>
+                    <img id="mic" src="/img/mic.png" alt="mic">
                     <div class="buttons">
                         <button id="m_on" type="button">ON</button>
                         <button id="m_off" type="button">OFF</button>
                     </div>
                 </div>
-                <div class="cam">
-                    <img src="/img/cam.png" alt="cam">
+                <div>
+                    <img id="cam" src="/img/cam.png" alt="cam">
                     <div class="buttons">
                         <button id="c_on" type="button">ON</button>
                         <button id="c_off" type="button">OFF</button>
                     </div>
                 </div>
             </div>
-            <div id="mensaje">prueba consola</div>
+            <div id="mensaje">Historial de solicitudes</div>
         </section>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
         <script>
             var socket = io();
+            const textbox = document.getElementById("mensaje");
+            let msjMostrado = 0;
 
             // control de teclado
             function onTeclado() {
-                socket.emit("onKey", (response) => {
-                    console.log(response);
-                });
+                socket.emit("onKey");
             }
 
             function offTeclado() {
@@ -70,12 +70,41 @@
                 socket.emit("offCam");
             }
 
+            // respuesta del servidor
+            socket.on("response", function (object) {
+                stateDevice(object.device, object.state);
+            })
+
             document.getElementById("t_on").onclick = onTeclado;
             document.getElementById("t_off").onclick = offTeclado;
             document.getElementById("m_on").onclick = onMic;
             document.getElementById("m_off").onclick = offMic;
             document.getElementById("c_on").onclick = onCam;
             document.getElementById("c_off").onclick = offCam;
+
+
+            // función para cambiar el estilo de la imagen de los periféricos en la interfaz
+            const stateDevice = (device, state) => {
+                let textTag = document.createElement("p");
+
+                if (msjMostrado >= 3) {
+                    textbox.firstChild.remove();
+                }
+
+                if (state === "on") {
+                    textTag.innerHTML = "encendiendo " + device + " ...";
+                    document.getElementById(device).style.filter = "drop-shadow(0 0 30px rgba(0, 255, 0, 0.40))"
+                }
+
+                if (state === "off") {
+                    textTag.innerHTML = "apagando " + device + " ...";
+                    document.getElementById(device).style.filter = "drop-shadow(0 0 30px rgba(255, 0, 0, 0.40))"
+                }
+                
+                textbox.appendChild(textTag);
+
+                msjMostrado ++;
+            }
         </script>
     </body>
 </html>
