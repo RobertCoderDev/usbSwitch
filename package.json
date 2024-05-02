@@ -9,7 +9,7 @@
     "start": "node app.js"
   },
   "author": "Roberto Vazquez @robertCoder (robertcoderdev@gmail.com)",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.19.2",
     "johnny-five": "^2.1.0",
