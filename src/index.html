@@ -43,6 +43,10 @@
             const textbox = document.getElementById("mensaje");
             let msjMostrado = 0;
 
+            let statusTeclado = "";
+            let statusMic = "";
+            let statusCam = "";
+
             // control de teclado
             function onTeclado() {
                 socket.emit("onKey");
@@ -83,10 +87,42 @@
             document.getElementById("c_off").onclick = offCam;
 
 
-            // función para cambiar el estilo de la imagen de los periféricos en la interfaz
+            // función para buscar cambios en el estado de los periféricos
             const stateDevice = (device, state) => {
-                let textTag = document.createElement("p");
 
+                switch (device) {
+                    case "teclado":
+                        if (statusTeclado != state) {
+                            statusTeclado = state;
+                            printMsj(device, state);
+                        }
+                        break;
+
+                    case "mic":
+                        if (statusMic != state) {
+                            statusMic = state;
+                            printMsj(device, state);
+                        }
+                        break;
+
+                    case "cam":
+                        if (statusCam != state) {
+                            statusCam = state;
+                            printMsj(device, state);
+                        }
+                        break;
+                
+                    default:
+                        console.log("device no encontrado");
+                        break;
+                }
+
+            }
+
+            // función para cambiar el estilo de la imagen de los periféricos en la interfaz
+            const printMsj = (device, state) => {
+                let textTag = document.createElement("p");
+                
                 if (msjMostrado >= 3) {
                     textbox.firstChild.remove();
                 }
@@ -94,16 +130,19 @@
                 if (state === "on") {
                     textTag.innerHTML = "encendiendo " + device + " ...";
                     document.getElementById(device).style.filter = "drop-shadow(0 0 30px rgba(0, 255, 0, 0.40))"
+                    console.log("encendiendo " + device);
                 }
 
                 if (state === "off") {
                     textTag.innerHTML = "apagando " + device + " ...";
                     document.getElementById(device).style.filter = "drop-shadow(0 0 30px rgba(255, 0, 0, 0.40))"
+                    console.log("apagando " + device);
                 }
                 
                 textbox.appendChild(textTag);
 
                 msjMostrado ++;
+
             }
         </script>
     </body>

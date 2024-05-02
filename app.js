@@ -26,9 +26,10 @@ board.on("ready", function () {
     var buttonMic = new five.Button(6);
     var buttonCam = new five.Button(7);
 
-    var keyState = new five.Switch(8);
-    var micState = new five.Switch(9);
-    var camState = new five.Switch(10);
+    var switchList = new five.Switches([ 8, 9, 10 ]);
+    var keyState = switchList[0];
+    var micState = switchList[1];
+    var camState = switchList[2];
 
     led.off();
 
@@ -37,7 +38,6 @@ board.on("ready", function () {
     cam.open();
 
     console.log("conectado a la placa Arduino ...");
-
 
     // control por push bottom
     buttonKey.on("down", function () {
@@ -55,11 +55,9 @@ board.on("ready", function () {
         console.log("cambio manual del estado de alimentación de la cámara ...");
     });
 
-
     // conexión a un cliente front end
     io.on("connection", function (socket) {
         var loopVar = 0;
-
 
         // enviar primer estado de los periféricos al front end
         if (keyState.isClosed) {
@@ -67,7 +65,7 @@ board.on("ready", function () {
                 device: "teclado",
                 state: "on",
             });
-        }else {
+        } else {
             io.emit("response", {
                 device: "teclado",
                 state: "off",
@@ -79,7 +77,7 @@ board.on("ready", function () {
                 device: "mic",
                 state: "on",
             });
-        }else {
+        } else {
             io.emit("response", {
                 device: "mic",
                 state: "off",
@@ -91,7 +89,7 @@ board.on("ready", function () {
                 device: "cam",
                 state: "on",
             });
-        }else {
+        } else {
             io.emit("response", {
                 device: "cam",
                 state: "off",
@@ -178,7 +176,7 @@ board.on("ready", function () {
             }
         }, 500);
 
-        // mensa de conexión exitosa al front end
+        // mensaje de conexión exitosa al front end
         console.log("conexión establecida con el frontend ...");
 
         // led de desconexión  del front end
