@@ -41,7 +41,7 @@ Este proyecto es un prototipo de control de periféricos (teclado, micrófono y 
 ## Instalación
 
 1. Clona este repositorio en tu máquina local.
-2. Es necesario instalar Node en su versión 13.12.0 y Python versión 2.7.
+2. Es necesario instalar Node en su versión 20.19 y Python versión 3.13. En algunos casos puede ser necesario instalar Desarrollo para el escritorio con C++, desde VS Build Tools 2022.
 3. Instala las dependencias utilizando npm:
 
     ```bash
